@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Noticeboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Kalam:wght@400;700&display=swap">
+  <style>
+    :root {
+      --walnut: #4e3322;
+      --cork: #b8875a;
+      --ink: #2a2118;
+      --ink-soft: #5b4a3a;
+      --index-card: #fffdf7;
+      --pin-red: #c62f2f;
+      --focus: #1f5fa8;
+      --paper-yellow: #f7e48f;
+      --paper-blue: #c9dfef;
+      --paper-pink: #f3c9d1;
+      --paper-green: #cfe5bd;
+      --frame: clamp(8px, 1.8vw, 18px);
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: var(--frame);
+      background: var(--walnut);
+      color: var(--ink);
+      font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* The cork board */
+    .board {
+      min-height: calc(100vh - 2 * var(--frame));
+      padding: clamp(22px, 4vw, 48px);
+      border-radius: 4px;
+      background-color: var(--cork);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.28 0 0 0 0 0.16 0 0 0 0 0.06 1.7 0 0 0 -0.66'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23d)'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.94 0 0 0 0 0.8 0 0 0 0 0.6 0 1.6 0 0 -0.7'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23l)'/%3E%3C/svg%3E");
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25), inset 0 0 70px rgba(40, 20, 5, .45);
+    }
+
+    /* Title strip, taped to the board */
+    .masthead { margin: 0 0 clamp(30px, 5vw, 54px); }
+
+    .title-strip {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      padding: .55rem 1.2rem .65rem;
+      background: var(--index-card);
+      transform: rotate(-1.4deg);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, .15), 0 12px 20px -8px rgba(40, 20, 5, .55);
+    }
+
+    .title-strip::before,
+    .title-strip::after {
+      content: "";
+      position: absolute;
+      top: -9px;
+      width: 62px;
+      height: 22px;
+      background: rgba(255, 255, 255, .55);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
+    }
+    .title-strip::before { left: -16px; transform: rotate(-32deg); }
+    .title-strip::after { right: -16px; transform: rotate(28deg); }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.3rem, 7vw, 4.2rem);
+      font-weight: 800;
+      font-variation-settings: "opsz" 96;
+      line-height: .95;
+      letter-spacing: -.03em;
+      overflow-wrap: anywhere;
+    }
+
+    .tagline {
+      margin: .4rem 0 0;
+      font-size: 1rem;
+      color: var(--ink-soft);
+    }
+
+    /* Layout of everything pinned */
+    .pinboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+      gap: clamp(24px, 3vw, 38px);
+      align-items: start;
+    }
+
+    /* The index card used for writing */
+    .compose {
+      padding: 1.1rem 1.1rem 1.2rem;
+      background: var(--index-card);
+      transform: rotate(-.6deg);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, .15), 0 12px 22px -8px rgba(40, 20, 5, .55);
+    }
+
+    @media (min-width: 600px) {
+      .compose { grid-row: span 3; }
+    }
+
+    .compose h2 {
+      margin: 0 0 .85rem;
+      padding-bottom: .45rem;
+      border-bottom: 2px solid #e27b86;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .field { margin-bottom: .85rem; }
+
+    .field-label,
+    legend {
+      display: block;
+      margin-bottom: .3rem;
+      padding: 0;
+      font-size: .85rem;
+      font-weight: 600;
+    }
+
+    .optional { font-weight: 400; color: var(--ink-soft); }
+
+    textarea,
+    input[type="text"] {
+      width: 100%;
+      padding: .5rem .6rem;
+      border: 1px solid #cbbba7;
+      border-radius: 3px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 7.5rem;
+      resize: vertical;
+      font-family: "Kalam", "Comic Sans MS", cursive;
+      font-size: 1.1rem;
+      line-height: 1.4;
+    }
+
+    textarea:focus-visible,
+    input[type="text"]:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .char-count {
+      display: block;
+      margin-top: .2rem;
+      text-align: right;
+      font-size: .78rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink-soft);
+    }
+
+    fieldset { margin: 0 0 1.1rem; padding: 0; border: 0; }
+
+    .swatches { display: flex; gap: .65rem; }
+
+    .swatch { position: relative; }
+
+    .swatch input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+
+    .dot {
+      display: block;
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(0, 0, 0, .25);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .swatch input:checked + .dot { box-shadow: 0 0 0 2px var(--index-card), 0 0 0 4px var(--ink); }
+    .swatch input:focus-visible + .dot { outline: 3px solid var(--focus); outline-offset: 5px; }
+
+    .pin-button {
+      width: 100%;
+      padding: .7rem 1rem;
+      border: 0;
+      border-radius: 3px;
+      background: var(--pin-red);
+      color: #fff;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .pin-button:hover { background: #a92525; }
+    .pin-button:disabled { background: #9b8c7d; cursor: not-allowed; }
+
+    .status {
+      min-height: 1.25em;
+      margin: .6rem 0 0;
+      font-size: .85rem;
+      color: var(--ink-soft);
+    }
+    .status.is-error { color: #a42020; }
+
+    /* Paper notes */
+    .paper-yellow { background-color: var(--paper-yellow); }
+    .paper-blue { background-color: var(--paper-blue); }
+    .paper-pink { background-color: var(--paper-pink); }
+    .paper-green { background-color: var(--paper-green); }
+
+    .note {
+      --pin: var(--pin-red);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: .9rem;
+      min-height: 9.5rem;
+      margin: 0;
+      padding: 1.7rem 1.15rem .9rem;
+      transform: rotate(var(--tilt, 0deg));
+      box-shadow: 0 1px 1px rgba(0, 0, 0, .12), 0 11px 18px -7px rgba(45, 25, 8, .5);
+    }
+
+    .note::before {
+      content: "";
+      position: absolute;
+      top: .5rem;
+      left: 50%;
+      width: 16px;
+      height: 16px;
+      margin-left: -8px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, .8) 0 2px, transparent 3px), var(--pin);
+      box-shadow: 0 3px 3px rgba(0, 0, 0, .35);
+    }
+
+    .note-text {
+      margin: 0;
+      font-family: "Kalam", "Comic Sans MS", cursive;
+      font-size: 1.2rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .note footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: .2rem .8rem;
+      font-size: .8rem;
+      color: var(--ink-soft);
+    }
+
+    .note-author { font-weight: 600; overflow-wrap: anywhere; }
+
+    .board-message {
+      min-height: 0;
+      font-family: "Kalam", "Comic Sans MS", cursive;
+      font-size: 1.15rem;
+      line-height: 1.4;
+    }
+
+    .just-pinned { animation: pin-drop .38s cubic-bezier(.2, .8, .3, 1.2); }
+
+    @keyframes pin-drop {
+      from { opacity: 0; transform: translateY(-16px) rotate(calc(var(--tilt, 0deg) - 4deg)) scale(1.04); }
+      to { opacity: 1; transform: rotate(var(--tilt, 0deg)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .just-pinned { animation: none; }
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="board">
+    <header class="masthead">
+      <div class="title-strip">
+        <h1 id="board-title">Noticeboard</h1>
+        <p class="tagline">Pin a note for everyone who visits.</p>
+      </div>
+    </header>
+
+    <main class="pinboard" id="pinboard">
+      <form class="compose" id="compose" novalidate>
+        <h2>Pin a note</h2>
+
+        <div class="field">
+          <label class="field-label" for="message">Message</label>
+          <textarea id="message" name="message" maxlength="500" placeholder="What should people know?"></textarea>
+          <span class="char-count" id="char-count" aria-hidden="true">0 / 500</span>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="author">Your name <span class="optional">(optional)</span></label>
+          <input type="text" id="author" name="author" maxlength="40" autocomplete="nickname">
+        </div>
+
+        <fieldset>
+          <legend>Paper color</legend>
+          <div class="swatches">
+            <label class="swatch"><input type="radio" name="color" value="yellow" checked><span class="dot paper-yellow"></span><span class="visually-hidden">Yellow</span></label>
+            <label class="swatch"><input type="radio" name="color" value="blue"><span class="dot paper-blue"></span><span class="visually-hidden">Blue</span></label>
+            <label class="swatch"><input type="radio" name="color" value="pink"><span class="dot paper-pink"></span><span class="visually-hidden">Pink</span></label>
+            <label class="swatch"><input type="radio" name="color" value="green"><span class="dot paper-green"></span><span class="visually-hidden">Green</span></label>
+          </div>
+        </fieldset>
+
+        <button class="pin-button" id="pin-button" type="submit">Pin note</button>
+        <p class="status" id="status" role="status"></p>
+      </form>
+
+      <p class="note board-message paper-yellow" id="board-message" style="--tilt: 1.2deg">Loading notes…</p>
+    </main>
+  </div>
+
+  <script type="module">
+    // ------------------------------------------------------------------
+    // 1. Paste your config from Firebase:
+    //    Project settings > General > Your apps > SDK setup and configuration
+    // ------------------------------------------------------------------
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyB97NbIx9RfpNx4zSY0v2gRoE_HcjWTEQk",
+      authDomain: "elibrary-bi.firebaseapp.com",
+      projectId: "elibrary-bi",
+      storageBucket: "elibrary-bi.firebasestorage.app",
+      messagingSenderId: "299592792296",
+      appId: "1:299592792296:web:4259a269b816cb416db15d"
+    };
+
+    // 2. Optional settings
+    const BOARD_TITLE = "Noticeboard";
+    const MAX_NOTES_SHOWN = 60;   // each visit reads up to this many notes from the free daily quota
+    const COOLDOWN_SECONDS = 30;  // how long one browser waits between notes
+
+    // ------------------------------------------------------------------
+    const FIREBASE_VERSION = "12.17.1";
+    const COLORS = ["yellow", "blue", "pink", "green"];
+    const PINS = ["#c62f2f", "#2f5fa8", "#2f7a3b", "#d69a12", "#7a3fa0"];
+    const MAX_LENGTH = 500;
+
+    const pinboard = document.getElementById("pinboard");
+    const form = document.getElementById("compose");
+    const messageInput = document.getElementById("message");
+    const authorInput = document.getElementById("author");
+    const charCount = document.getElementById("char-count");
+    const statusLine = document.getElementById("status");
+    const pinButton = document.getElementById("pin-button");
+    const boardMessage = document.getElementById("board-message");
+
+    document.getElementById("board-title").textContent = BOARD_TITLE;
+    document.title = BOARD_TITLE;
+
+    let fb = null;
+    let notesRef = null;
+    let latestDocs = [];
+    let firstSnapshot = true;
+    const seenIds = new Set();
+
+    function hash(str) {
+      let h = 2166136261;
+      for (let i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return h >>> 0;
+    }
+
+    function setStatus(text, isError = false) {
+      statusLine.textContent = text;
+      statusLine.classList.toggle("is-error", isError);
+    }
+
+    function showBoardMessage(text) {
+      boardMessage.textContent = text;
+      boardMessage.hidden = !text;
+    }
+
+    const relative = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+    const UNITS = [["year", 31536000], ["month", 2592000], ["week", 604800], ["day", 86400], ["hour", 3600], ["minute", 60]];
+
+    function timeAgo(date) {
+      if (!date) return "just now";
+      const seconds = (date.getTime() - Date.now()) / 1000;
+      for (const [unit, size] of UNITS) {
+        if (Math.abs(seconds) >= size) return relative.format(Math.trunc(seconds / size), unit);
+      }
+      return "just now";
+    }
+
+    function buildNote(id, data) {
+      const color = COLORS.includes(data.color) ? data.color : "yellow";
+      const h = hash(id);
+
+      const note = document.createElement("article");
+      note.className = `note paper-${color}`;
+      note.style.setProperty("--tilt", `${((h % 51) / 10 - 2.5).toFixed(1)}deg`);
+      note.style.setProperty("--pin", PINS[(h >>> 8) % PINS.length]);
+
+      const text = document.createElement("p");
+      text.className = "note-text";
+      text.textContent = typeof data.text === "string" ? data.text : "";
+
+      const footer = document.createElement("footer");
+      const author = document.createElement("span");
+      author.className = "note-author";
+      author.textContent = (typeof data.author === "string" && data.author.trim()) || "Anonymous";
+
+      const time = document.createElement("time");
+      const date = data.createdAt && typeof data.createdAt.toDate === "function" ? data.createdAt.toDate() : null;
+      if (date) {
+        time.dateTime = date.toISOString();
+        time.title = date.toLocaleString();
+      }
+      time.textContent = timeAgo(date);
+
+      footer.append(author, time);
+      note.append(text, footer);
+      return note;
+    }
+
+    function render(animateIds = new Set()) {
+      pinboard.querySelectorAll("article.note").forEach((el) => el.remove());
+      const fragment = document.createDocumentFragment();
+      for (const { id, data } of latestDocs) {
+        const note = buildNote(id, data);
+        if (animateIds.has(id)) note.classList.add("just-pinned");
+        fragment.append(note);
+      }
+      pinboard.append(fragment);
+      showBoardMessage(latestDocs.length ? "" : "Nothing pinned yet. Write the first note.");
+    }
+
+    function describeError(error) {
+      switch (error && error.code) {
+        case "permission-denied":
+          return "The database refused the request. Check that the rules from firestore.rules are published.";
+        case "resource-exhausted":
+          return "The board reached today's free usage limit. It resets at midnight Pacific time.";
+        case "unavailable":
+          return "The database can't be reached. Check your internet connection.";
+        default:
+          return (error && error.message) || "Something went wrong.";
+      }
+    }
+
+    const COOLDOWN_KEY = "noticeboard:last-pinned";
+
+    function secondsUntilNextPin() {
+      try {
+        const last = Number(localStorage.getItem(COOLDOWN_KEY)) || 0;
+        return Math.max(0, Math.ceil((last + COOLDOWN_SECONDS * 1000 - Date.now()) / 1000));
+      } catch {
+        return 0;
+      }
+    }
+
+    function rememberPin() {
+      try { localStorage.setItem(COOLDOWN_KEY, String(Date.now())); } catch { /* storage unavailable */ }
+    }
+
+    messageInput.addEventListener("input", () => {
+      charCount.textContent = `${messageInput.value.length} / ${MAX_LENGTH}`;
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!notesRef) return;
+
+      const text = messageInput.value.trim();
+      if (!text) {
+        setStatus("Write a message before pinning.", true);
+        messageInput.focus();
+        return;
+      }
+
+      const wait = secondsUntilNextPin();
+      if (wait > 0) {
+        setStatus(`You can pin another note in ${wait} seconds.`, true);
+        return;
+      }
+
+      pinButton.disabled = true;
+      pinButton.textContent = "Pinning…";
+      setStatus("");
+
+      try {
+        await fb.addDoc(notesRef, {
+          text: text.slice(0, MAX_LENGTH),
+          author: authorInput.value.trim().slice(0, 40),
+          color: COLORS.includes(form.elements.color.value) ? form.elements.color.value : "yellow",
+          createdAt: fb.serverTimestamp()
+        });
+        rememberPin();
+        messageInput.value = "";
+        charCount.textContent = `0 / ${MAX_LENGTH}`;
+        setStatus("Pinned.");
+      } catch (error) {
+        setStatus(`Couldn't pin your note. ${describeError(error)}`, true);
+      } finally {
+        pinButton.disabled = false;
+        pinButton.textContent = "Pin note";
+      }
+    });
+
+    async function connect() {
+      if (firebaseConfig.apiKey.startsWith("PASTE")) {
+        pinButton.disabled = true;
+        showBoardMessage("This board isn't connected yet. Paste your Firebase config into the script at the bottom of index.html.");
+        return;
+      }
+
+      try {
+        const base = `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}`;
+        const [{ initializeApp }, firestore] = await Promise.all([
+          import(`${base}/firebase-app.js`),
+          import(`${base}/firebase-firestore.js`)
+        ]);
+
+        fb = firestore;
+        const db = firestore.getFirestore(initializeApp(firebaseConfig));
+        notesRef = firestore.collection(db, "notes");
+        const recent = firestore.query(notesRef, firestore.orderBy("createdAt", "desc"), firestore.limit(MAX_NOTES_SHOWN));
+
+        firestore.onSnapshot(
+          recent,
+          (snapshot) => {
+            latestDocs = snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data({ serverTimestamps: "estimate" }) }));
+            const fresh = new Set();
+            for (const { id } of latestDocs) {
+              if (!firstSnapshot && !seenIds.has(id)) fresh.add(id);
+              seenIds.add(id);
+            }
+            firstSnapshot = false;
+            render(fresh);
+          },
+          (error) => {
+            showBoardMessage(`Couldn't load notes. ${describeError(error)}`);
+          }
+        );
+      } catch (error) {
+        pinButton.disabled = true;
+        showBoardMessage("Couldn't load the Firebase library. Check your internet connection and reload the page.");
+      }
+    }
+
+    // Keep "5 minutes ago" labels current.
+    setInterval(() => { if (latestDocs.length) render(); }, 60000);
+
+    connect();
+  </script>
+</body>
+</html>
