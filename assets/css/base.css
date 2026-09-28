@@ -5,15 +5,15 @@
    --------------------------------------------------------------------------- */
 
 :root {
-  --walnut: #ffffff;
-  --walnut-light: #ffefe4;
+  --walnut: #4e3322;
+  --walnut-light: #5a3b27;
   /* The navigation rail */
   --navy: #17284a;
   --navy-light: #24395f;
   --navy-deep: #0f1c36;
   --cork: #b8875a;
   --ink: #2a2118;
-  --ink-soft: #ffffff;
+  --ink-soft: #5b4a3a;
   --index-card: #fffdf7;
   --pin-red: #c62f2f;
   --focus: #1f5fa8;
