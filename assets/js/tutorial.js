@@ -6,7 +6,7 @@ import { SITE_TITLE } from "./settings.js";
 import { DEFAULT_TOPIC, findTopic, TOPICS } from "./tutorials.js";
 import { currentTopic, resolveHref } from "./nav.js";
 import { loadNotebook, NotebookMissing } from "./notebook.js";
-import { renderBlocks } from "./content.js";
+import { inline, renderBlocks } from "./content.js";
 
 const heading = document.getElementById("tutorial-title");
 const tagline = document.getElementById("tutorial-tagline");
@@ -15,7 +15,7 @@ const title = document.getElementById("practical-title");
 const summary = document.getElementById("practical-summary");
 const body = document.getElementById("practical-body");
 const notebookBox = document.getElementById("practical-notebook");
-const goodList = document.getElementById("good-to-know");
+const goodBox = document.getElementById("good-to-know");
 const stepper = document.getElementById("topic-stepper");
 
 // Bumped on every topic change; a late notebook response for a topic the
@@ -30,13 +30,33 @@ function setText(node, text) {
   node.textContent = text;
 }
 
+/**
+ * "Good to know" takes either shape:
+ *   a list of strings  -> bullets, with **bold** / `code` / [links] honoured
+ *   a list of blocks   -> the same blocks the write-up uses, so the card can
+ *                         carry headings and callouts, not just bullets
+ */
 function renderGoodToKnow(topic) {
-  goodList.textContent = "";
-  for (const fact of topic.goodToKnow) {
-    const li = document.createElement("li");
-    li.textContent = fact;
-    goodList.append(li);
+  const entries = Array.isArray(topic.goodToKnow) ? topic.goodToKnow : [];
+  goodBox.textContent = "";
+
+  if (!entries.length) return;
+
+  if (entries.every((entry) => typeof entry === "string")) {
+    goodBox.className = "facts-box";
+    const list = document.createElement("ul");
+    list.className = "facts";
+    for (const fact of entries) {
+      const li = document.createElement("li");
+      inline(fact, li);
+      list.append(li);
+    }
+    goodBox.append(list);
+    return;
   }
+
+  goodBox.className = "facts-box post";
+  renderBlocks(entries, goodBox);
 }
 
 function renderStepper(topic) {

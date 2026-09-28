@@ -5,12 +5,16 @@
    --------------------------------------------------------------------------- */
 
 :root {
-  --walnut: #4e3322;
-  --walnut-light: #5a3b27;
-  /* The navigation rail */
-  --navy: #17284a;
-  --navy-light: #24395f;
-  --navy-deep: #0f1c36;
+  --walnut: #3a2617;
+  /* The navigation rail, light at the top to dark at the foot */
+  --rail-top: #5b3d28;
+  --rail-mid: #472f1c;
+  --rail-base: #33200f;
+  /* Code chunks in the practical write-ups */
+  --code-bg: #2b1f15;
+  --code-head: #3d2c1e;
+  --code-edge: #1c130b;
+  --code-text: #f2e9de;
   --cork: #b8875a;
   --ink: #2a2118;
   --ink-soft: #5b4a3a;
@@ -23,7 +27,7 @@
   --paper-pink: #f3c9d1;
   --paper-green: #cfe5bd;
   --frame: clamp(8px, 1.8vw, 18px);
-  --rail: clamp(190px, 19vw, 235px);
+  --rail-width: clamp(190px, 19vw, 235px);
   --card-shadow: 0 1px 1px rgba(0, 0, 0, .15), 0 12px 22px -8px rgba(40, 20, 5, .55);
 }
 

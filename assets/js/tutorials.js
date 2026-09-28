@@ -45,10 +45,15 @@ export const TOPICS = [
       { type: "text", value: "If it does not, pin a note on [Sticky Notes](pages/noticeboard.html) with the error text and we will sort it out." }
     ],
     goodToKnow: [
-      "Do this before the first session — installing R in the room eats the whole hour.",
-      "Mac and Windows differ at the Rtools step; ask early if you are stuck.",
-      "You only set the kernel up once, not per assignment."
+      { type: "heading", value: "Dates" },
+      { type: "list", items: [
+        "Handout: **00.00.0000**",
+        "**Tutorial:** Tue 20.10.26, 10:00–12:00, Seminar room C215"
+      ] },
+      { type: "note", value: "Ask on the **ILIAS forum** first — others likely have the same question." },
+      { type: "text", value: "Contact ***** via [*****@uni-tuebingen.de](mailto:*****@uni-tuebingen.de)" }
     ]
+
   },
   { id: "A01", title: "First steps in R" },
   { id: "A02", title: "Reading and tidying count data" },

@@ -147,11 +147,11 @@
   justify-content: space-between;
   gap: .6rem;
   padding: .3rem .5rem .3rem .7rem;
-  border: 1px solid var(--navy-deep);
+  border: 1px solid var(--code-edge);
   border-bottom: 0;
   border-radius: 3px 3px 0 0;
-  background: var(--navy);
-  color: var(--index-card);
+  background: var(--code-head);
+  color: var(--code-text);
 }
 
 .post-code-language {
@@ -179,10 +179,10 @@
   overflow-x: auto;
   margin: 0;
   padding: .8rem .9rem;
-  border: 1px solid var(--navy-deep);
+  border: 1px solid var(--code-edge);
   border-radius: 0 0 3px 3px;
-  background: #0f1c36;
-  color: #e8edf7;
+  background: var(--code-bg);
+  color: var(--code-text);
 }
 
 .post-code code {
@@ -296,3 +296,14 @@
 }
 .facts li { margin-bottom: .5rem; line-height: 1.5; }
 .facts li:last-child { margin-bottom: 0; }
+
+/* When "Good to know" is written as blocks rather than bullets, the post
+   styles apply — but in a narrow card they need tightening. */
+.facts-box.post { margin-bottom: 0; }
+.facts-box.post p { max-width: none; font-size: .95rem; }
+.facts-box.post h3 { margin: 1.1rem 0 .35rem; font-size: 1rem; }
+.facts-box.post h4 { margin: .9rem 0 .3rem; font-size: .92rem; }
+.facts-box.post .post-list { max-width: none; font-size: .95rem; }
+.facts-box.post .post-note { margin: .9rem 0; }
+.facts-box.post .post-figure,
+.facts-box.post .post-code { margin: .9rem 0; }
