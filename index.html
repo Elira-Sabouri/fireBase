@@ -267,6 +267,62 @@
 
     .note-author { font-weight: 600; overflow-wrap: anywhere; }
 
+    .remove-button {
+      padding: .1rem .45rem;
+      border: 1px solid rgba(0, 0, 0, .25);
+      border-radius: 3px;
+      background: rgba(255, 255, 255, .55);
+      color: var(--ink-soft);
+      font: inherit;
+      font-size: .75rem;
+      cursor: pointer;
+    }
+    .remove-button:hover { background: #fff; color: #a42020; }
+
+    .owner-bar {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .5rem;
+      margin-top: clamp(28px, 4vw, 46px);
+      padding: .5rem .8rem;
+      background: var(--index-card);
+      font-size: .85rem;
+    }
+
+    .owner-bar input {
+      width: 10.5rem;
+      max-width: 100%;
+      padding: .35rem .45rem;
+      border: 1px solid #cbbba7;
+      border-radius: 3px;
+      font: inherit;
+      font-size: .85rem;
+    }
+
+    .link-button {
+      padding: 0;
+      border: 0;
+      background: none;
+      color: #1f5fa8;
+      font: inherit;
+      font-size: .85rem;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .small-button {
+      padding: .35rem .7rem;
+      border: 1px solid #cbbba7;
+      border-radius: 3px;
+      background: #fff;
+      font: inherit;
+      font-size: .85rem;
+      cursor: pointer;
+    }
+
+    .owner-fields { display: inline-flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+
     .board-message {
       min-height: 0;
       font-family: "Kalam", "Comic Sans MS", cursive;
@@ -335,6 +391,17 @@
 
       <p class="note board-message paper-yellow" id="board-message" style="--tilt: 1.2deg">Loading notes…</p>
     </main>
+
+    <div class="owner-bar">
+      <button type="button" class="link-button" id="owner-toggle">Owner sign-in</button>
+      <span class="owner-fields" id="owner-fields" hidden>
+        <input type="email" id="owner-email" placeholder="Email" aria-label="Owner email" autocomplete="username">
+        <input type="password" id="owner-password" placeholder="Password" aria-label="Owner password" autocomplete="current-password">
+        <button type="button" class="small-button" id="owner-signin">Sign in</button>
+      </span>
+      <span id="owner-signed-in" hidden>Signed in as owner. <button type="button" class="link-button" id="owner-signout">Sign out</button></span>
+      <span id="owner-status" role="status"></span>
+    </div>
   </div>
 
   <script type="module">
@@ -342,20 +409,23 @@
     // 1. Paste your config from Firebase:
     //    Project settings > General > Your apps > SDK setup and configuration
     // ------------------------------------------------------------------
-    // Your web app's Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyB97NbIx9RfpNx4zSY0v2gRoE_HcjWTEQk",
-      authDomain: "elibrary-bi.firebaseapp.com",
-      projectId: "elibrary-bi",
-      storageBucket: "elibrary-bi.firebasestorage.app",
-      messagingSenderId: "299592792296",
-      appId: "1:299592792296:web:4259a269b816cb416db15d"
+      apiKey: "PASTE-YOUR-API-KEY",
+      authDomain: "your-project.firebaseapp.com",
+      projectId: "your-project",
+      storageBucket: "your-project.firebasestorage.app",
+      messagingSenderId: "000000000000",
+      appId: "1:000000000000:web:0000000000000000"
     };
 
     // 2. Optional settings
     const BOARD_TITLE = "Noticeboard";
     const MAX_NOTES_SHOWN = 60;   // each visit reads up to this many notes from the free daily quota
     const COOLDOWN_SECONDS = 30;  // how long one browser waits between notes
+
+    // 3. Your own user ID, from Authentication > Users in the Firebase console.
+    //    It lets you remove any note from the page. Leave it as is until you have one.
+    const OWNER_UID = "vsI5O9OkwcegTkT9JhWwBeTElL73";
 
     // ------------------------------------------------------------------
     const FIREBASE_VERSION = "12.17.1";
@@ -371,12 +441,25 @@
     const statusLine = document.getElementById("status");
     const pinButton = document.getElementById("pin-button");
     const boardMessage = document.getElementById("board-message");
+    const ownerToggle = document.getElementById("owner-toggle");
+    const ownerFields = document.getElementById("owner-fields");
+    const ownerEmail = document.getElementById("owner-email");
+    const ownerPassword = document.getElementById("owner-password");
+    const ownerSignIn = document.getElementById("owner-signin");
+    const ownerSignedIn = document.getElementById("owner-signed-in");
+    const ownerSignOut = document.getElementById("owner-signout");
+    const ownerStatus = document.getElementById("owner-status");
 
     document.getElementById("board-title").textContent = BOARD_TITLE;
     document.title = BOARD_TITLE;
 
     let fb = null;
+    let db = null;
+    let auth = null;
     let notesRef = null;
+    let currentUid = null;
+    let isOwner = false;
+    let signingIn = false;
     let latestDocs = [];
     let firstSnapshot = true;
     const seenIds = new Set();
@@ -439,8 +522,34 @@
       time.textContent = timeAgo(date);
 
       footer.append(author, time);
+
+      if (canRemove(data)) {
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "remove-button";
+        remove.textContent = "Remove";
+        remove.addEventListener("click", () => removeNote(id, remove));
+        footer.append(remove);
+      }
+
       note.append(text, footer);
       return note;
+    }
+
+    function canRemove(data) {
+      if (!currentUid) return false;
+      return isOwner || data.uid === currentUid;
+    }
+
+    async function removeNote(id, button) {
+      if (!window.confirm("Remove this note? This can't be undone.")) return;
+      button.disabled = true;
+      try {
+        await fb.deleteDoc(fb.doc(db, "notes", id));
+      } catch (error) {
+        button.disabled = false;
+        setStatus(`Couldn't remove the note. ${describeError(error)}`, true);
+      }
     }
 
     function render(animateIds = new Set()) {
@@ -504,6 +613,11 @@
         return;
       }
 
+      if (!currentUid) {
+        setStatus("Still connecting to the board. Try again in a moment.", true);
+        return;
+      }
+
       pinButton.disabled = true;
       pinButton.textContent = "Pinning…";
       setStatus("");
@@ -513,6 +627,7 @@
           text: text.slice(0, MAX_LENGTH),
           author: authorInput.value.trim().slice(0, 40),
           color: COLORS.includes(form.elements.color.value) ? form.elements.color.value : "yellow",
+          uid: currentUid,
           createdAt: fb.serverTimestamp()
         });
         rememberPin();
@@ -527,6 +642,35 @@
       }
     });
 
+    function updateOwnerBar() {
+      ownerSignedIn.hidden = !isOwner;
+      ownerToggle.hidden = isOwner;
+      if (isOwner) ownerFields.hidden = true;
+    }
+
+    ownerToggle.addEventListener("click", () => {
+      ownerFields.hidden = !ownerFields.hidden;
+      if (!ownerFields.hidden) ownerEmail.focus();
+    });
+
+    ownerSignIn.addEventListener("click", async () => {
+      if (!auth) return;
+      ownerStatus.textContent = "Signing in…";
+      try {
+        await fb.signInWithEmailAndPassword(auth, ownerEmail.value.trim(), ownerPassword.value);
+        ownerPassword.value = "";
+        ownerStatus.textContent = "";
+      } catch (error) {
+        ownerStatus.textContent = "That email and password didn't work.";
+      }
+    });
+
+    ownerSignOut.addEventListener("click", async () => {
+      if (!auth) return;
+      ownerStatus.textContent = "";
+      await fb.signOut(auth);
+    });
+
     async function connect() {
       if (firebaseConfig.apiKey.startsWith("PASTE")) {
         pinButton.disabled = true;
@@ -536,13 +680,35 @@
 
       try {
         const base = `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}`;
-        const [{ initializeApp }, firestore] = await Promise.all([
+        const [{ initializeApp }, firestore, authModule] = await Promise.all([
           import(`${base}/firebase-app.js`),
-          import(`${base}/firebase-firestore.js`)
+          import(`${base}/firebase-firestore.js`),
+          import(`${base}/firebase-auth.js`)
         ]);
 
-        fb = firestore;
-        const db = firestore.getFirestore(initializeApp(firebaseConfig));
+        fb = { ...firestore, ...authModule };
+        const app = initializeApp(firebaseConfig);
+        db = firestore.getFirestore(app);
+        auth = authModule.getAuth(app);
+
+        authModule.onAuthStateChanged(auth, (user) => {
+          if (!user) {
+            currentUid = null;
+            isOwner = false;
+            if (!signingIn) {
+              signingIn = true;
+              authModule.signInAnonymously(auth)
+                .catch(() => setStatus("Couldn't connect to the board. Check that Anonymous sign-in is enabled in Firebase.", true))
+                .finally(() => { signingIn = false; });
+            }
+          } else {
+            currentUid = user.uid;
+            isOwner = !user.isAnonymous && user.uid === OWNER_UID;
+          }
+          updateOwnerBar();
+          if (latestDocs.length) render();
+        });
+
         notesRef = firestore.collection(db, "notes");
         const recent = firestore.query(notesRef, firestore.orderBy("createdAt", "desc"), firestore.limit(MAX_NOTES_SHOWN));
 
