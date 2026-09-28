@@ -2,10 +2,10 @@
 // be rewritten when you update the app, so keep your keys out of this file.
 
 // Shown in the sidebar and used as the base of every page title.
-export const SITE_TITLE = "Noticeboard";
+export const SITE_TITLE = "Integrative Transcriptomics";
 
-// Heading printed on the taped title strip of the noticeboard page.
-export const BOARD_TITLE = "Noticeboard";
+// Heading printed on the taped title strip of the sticky-notes page.
+export const BOARD_TITLE = "Sticky Notes";
 
 // Each visit reads up to this many notes from the free daily quota.
 export const MAX_NOTES_SHOWN = 60;

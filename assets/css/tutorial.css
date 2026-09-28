@@ -1,62 +1,298 @@
-/* Rules used only by pages/tutorial.html. */
+/* Rules used only by pages/tutorial.html.
+   The practical fills the board; "Good to know" and "Replies" sit in a narrow
+   column pinned to the right of it. */
 
 .tutorial {
   display: grid;
   gap: clamp(24px, 3vw, 38px);
   align-items: start;
-  max-width: 62rem;
 }
 
 @media (min-width: 900px) {
-  .tutorial { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
-  .tutorial-steps { grid-row: span 2; }
+  .tutorial {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 22rem);
+  }
 }
 
-.tutorial-card:nth-child(odd) { --tilt: -.5deg; }
-.tutorial-card:nth-child(even) { --tilt: .7deg; }
+.tutorial-main { --tilt: -.5deg; }
 
-.steps {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: step;
-}
-
-.steps > li {
-  position: relative;
-  counter-increment: step;
-  margin-bottom: 1.15rem;
-  padding-left: 2.6rem;
-}
-.steps > li:last-child { margin-bottom: 0; }
-
-.steps > li::before {
-  content: counter(step);
-  position: absolute;
-  top: -.1rem;
-  left: 0;
+.tutorial-side {
   display: grid;
-  place-items: center;
-  width: 1.85rem;
-  height: 1.85rem;
-  border-radius: 50%;
+  gap: clamp(24px, 3vw, 38px);
+  align-items: start;
+}
+
+.tutorial-card:nth-child(odd) { --tilt: .8deg; }
+.tutorial-card:nth-child(even) { --tilt: -.7deg; }
+
+@media (min-width: 900px) {
+  /* Keep the two side notes in view while a long practical scrolls past. */
+  .tutorial-side {
+    position: sticky;
+    top: var(--frame);
+  }
+}
+
+.practical-code {
+  margin: 0 0 .15rem;
+  font-size: .85rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--pin-red);
+}
+
+.tutorial-main h2 {
+  margin: 0 0 .7rem;
+  padding-bottom: .5rem;
+  border-bottom: 2px solid #e27b86;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+
+.practical-summary {
+  margin: 0 0 1.2rem;
+  font-family: "Kalam", "Comic Sans MS", cursive;
+  font-size: 1.15rem;
+  line-height: 1.45;
+}
+
+/* The write-up, read like a post */
+.post { margin-bottom: 1.6rem; }
+
+.post > :first-child { margin-top: 0; }
+.post > :last-child { margin-bottom: 0; }
+
+.post p {
+  margin: 0 0 .95rem;
+  max-width: 62ch;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.post h3 {
+  margin: 1.7rem 0 .55rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+
+.post h4 {
+  margin: 1.3rem 0 .4rem;
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.post a { color: #14406f; }
+
+.post code {
+  padding: .08rem .3rem;
+  border-radius: 3px;
+  background: rgba(40, 20, 5, .09);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .92em;
+}
+
+.post-list {
+  margin: 0 0 .95rem;
+  padding-left: 1.3rem;
+  max-width: 62ch;
+}
+.post-list li { margin-bottom: .4rem; line-height: 1.6; }
+
+.post-empty { color: var(--ink-soft); font-style: italic; }
+
+/* Pictures */
+.post-figure {
+  margin: 1.3rem 0;
+  padding: 0;
+}
+
+.post-figure img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #d8cab4;
+  border-radius: 3px;
+  background: #fff;
+}
+
+.post-figure-missing,
+.post-figure figcaption,
+.post-code figcaption {
+  margin: .45rem 0 0;
+  font-size: .85rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.post-figure-missing {
+  padding: 1.4rem 1rem;
+  border: 1px dashed #b9a58f;
+  border-radius: 3px;
+  text-align: center;
+}
+
+/* Code chunks */
+.post-code {
+  margin: 1.2rem 0;
+  padding: 0;
+}
+
+.post-code-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+  padding: .3rem .5rem .3rem .7rem;
+  border: 1px solid var(--navy-deep);
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+  background: var(--navy);
+  color: var(--index-card);
+}
+
+.post-code-language {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.post-code-copy {
+  padding: .15rem .5rem;
+  border: 1px solid rgba(255, 253, 247, .4);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, .1);
+  color: var(--index-card);
+  font: inherit;
+  font-size: .75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.post-code-copy:hover { background: rgba(255, 255, 255, .24); }
+.post-code-copy:focus-visible { outline-color: var(--focus-dark); }
+
+.post-code pre {
+  overflow-x: auto;
+  margin: 0;
+  padding: .8rem .9rem;
+  border: 1px solid var(--navy-deep);
+  border-radius: 0 0 3px 3px;
+  background: #0f1c36;
+  color: #e8edf7;
+}
+
+.post-code code {
+  padding: 0;
+  background: none;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .88rem;
+  line-height: 1.55;
+}
+
+/* Callout */
+.post-note {
+  margin: 1.2rem 0;
+  padding: .75rem .95rem;
+  border-left: 4px solid var(--pin-red);
+  border-radius: 0 3px 3px 0;
+  background: #fbf0ef;
+}
+.post-note p { margin: 0; max-width: none; }
+
+/* The notebook panel */
+.practical-notebook {
+  padding: .9rem 1rem;
+  border: 1px solid #d8cab4;
+  border-radius: 3px;
+  background: #fbf6ea;
+}
+
+.notebook-status {
+  margin: 0;
+  font-size: .9rem;
+  color: var(--ink-soft);
+}
+.notebook-status.is-missing { color: #8a4a12; }
+
+.notebook-actions { margin: .6rem 0 0; }
+
+.notebook-link {
+  display: inline-block;
+  padding: .45rem .8rem;
+  border-radius: 3px;
   background: var(--pin-red);
   color: #fff;
-  font-size: .95rem;
+  font-size: .9rem;
   font-weight: 700;
+  text-decoration: none;
+}
+.notebook-link:hover { background: #a92525; }
+
+.notebook-outline { margin-top: 1rem; }
+
+.notebook-outline h3 {
+  margin: 0 0 .4rem;
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
 }
 
-.step-title {
-  margin: 0 0 .2rem;
-  font-size: 1.05rem;
-  font-weight: 700;
+.outline-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: .92rem;
+}
+.outline-list li { margin-bottom: .2rem; line-height: 1.4; }
+.outline-level-2 { margin-left: .7rem; }
+.outline-level-3 { margin-left: 1.4rem; font-size: .88rem; color: var(--ink-soft); }
+
+/* Previous / next */
+.topic-stepper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem .9rem;
+  margin-top: 1.3rem;
+  padding-top: .9rem;
+  border-top: 1px dashed rgba(0, 0, 0, .22);
 }
 
-.steps p { margin: 0; }
+.step-link {
+  padding: .35rem .7rem;
+  border: 1px solid #cbbba7;
+  border-radius: 3px;
+  background: #fff;
+  color: var(--ink);
+  font-size: .88rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.step-link:hover { background: #f1e9dc; text-decoration: underline; }
 
+.step-link.is-disabled {
+  border-style: dashed;
+  background: none;
+  color: #8d7f70;
+  cursor: default;
+}
+
+.step-position {
+  font-size: .85rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+}
+
+/* The two side notes */
 .facts {
   margin: 0;
   padding-left: 1.2rem;
 }
-.facts li { margin-bottom: .5rem; }
+.facts li { margin-bottom: .5rem; line-height: 1.5; }
 .facts li:last-child { margin-bottom: 0; }

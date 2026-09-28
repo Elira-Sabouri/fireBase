@@ -2,7 +2,7 @@
 // owner sign-in. Loaded only by pages/noticeboard.html, so the other pages
 // never touch Firebase.
 
-import { BOARD_TITLE, COOLDOWN_SECONDS, MAX_LENGTH, MAX_NOTES_SHOWN } from "./settings.js";
+import { BOARD_TITLE, COOLDOWN_SECONDS, MAX_LENGTH, MAX_NOTES_SHOWN, SITE_TITLE } from "./settings.js";
 import { connectFirebase, OWNER_UID } from "./firebase.js";
 import { createReplies } from "./replies.js";
 import { buildTimeElement, toDate } from "./time.js";
@@ -31,7 +31,7 @@ const ownerSignOut = document.getElementById("owner-signout");
 const ownerStatus = document.getElementById("owner-status");
 
 boardTitle.textContent = BOARD_TITLE;
-document.title = `${BOARD_TITLE} — pin a note`;
+document.title = `${SITE_TITLE} — ${BOARD_TITLE}`;
 messageInput.maxLength = MAX_LENGTH;
 charCount.textContent = `0 / ${MAX_LENGTH}`;
 
