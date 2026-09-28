@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Noticeboard — pin a note</title>
+  <meta name="description" content="Read what people have pinned, and pin a note of your own.">
+  <link rel="icon" href="../assets/img/pushpin.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Kalam:wght@400;700&display=swap">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/noticeboard.css">
+</head>
+<body data-page="noticeboard" data-base="..">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app">
+    <header class="sidebar" data-site-sidebar>
+      <noscript><p class="noscript-note">The site menu needs JavaScript. The pages are at ../index.html, noticeboard.html, tutorial.html and contact.html.</p></noscript>
+    </header>
+
+    <main class="board" id="main" tabindex="-1">
+      <header class="masthead">
+        <div class="title-strip">
+          <h1 id="board-title">Noticeboard</h1>
+          <p class="tagline">Pin a note for everyone who visits.</p>
+        </div>
+      </header>
+
+      <p class="replies-notice" id="replies-notice" role="status" hidden></p>
+
+      <div class="pinboard" id="pinboard">
+        <form class="compose" id="compose" novalidate>
+          <h2>Pin a note</h2>
+
+          <div class="field">
+            <label class="field-label" for="message">Message</label>
+            <textarea id="message" name="message" maxlength="500" placeholder="What should people know?"></textarea>
+            <span class="char-count" id="char-count" aria-hidden="true">0 / 500</span>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="author">Your name <span class="optional">(optional)</span></label>
+            <input type="text" id="author" name="author" maxlength="40" autocomplete="nickname">
+          </div>
+
+          <fieldset>
+            <legend>Paper color</legend>
+            <div class="swatches">
+              <label class="swatch"><input type="radio" name="color" value="yellow" checked><span class="dot paper-yellow"></span><span class="visually-hidden">Yellow</span></label>
+              <label class="swatch"><input type="radio" name="color" value="blue"><span class="dot paper-blue"></span><span class="visually-hidden">Blue</span></label>
+              <label class="swatch"><input type="radio" name="color" value="pink"><span class="dot paper-pink"></span><span class="visually-hidden">Pink</span></label>
+              <label class="swatch"><input type="radio" name="color" value="green"><span class="dot paper-green"></span><span class="visually-hidden">Green</span></label>
+            </div>
+          </fieldset>
+
+          <button class="pin-button" id="pin-button" type="submit">Pin note</button>
+          <p class="status" id="status" role="status"></p>
+        </form>
+
+        <p class="note pinned board-message paper-yellow" id="board-message" style="--tilt: 1.2deg">Loading notes…</p>
+      </div>
+
+      <div class="owner-bar">
+        <button type="button" class="link-button" id="owner-toggle">Owner sign-in</button>
+        <span class="owner-fields" id="owner-fields" hidden>
+          <input type="email" id="owner-email" placeholder="Email" aria-label="Owner email" autocomplete="username">
+          <input type="password" id="owner-password" placeholder="Password" aria-label="Owner password" autocomplete="current-password">
+          <button type="button" class="small-button" id="owner-signin">Sign in</button>
+        </span>
+        <span id="owner-signed-in" hidden>Signed in as owner. <button type="button" class="link-button" id="owner-signout">Sign out</button></span>
+        <span id="owner-status" role="status"></span>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="../assets/js/nav.js"></script>
+  <script type="module" src="../assets/js/noticeboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+/* Rules used only by pages/contact.html. */
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: clamp(24px, 3vw, 38px);
+  align-items: start;
+  max-width: 62rem;
+}
+
+.contact-card:nth-child(odd) { --tilt: -.7deg; }
+.contact-card:nth-child(even) { --tilt: .8deg; }
+
+.contact-list {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .45rem .9rem;
+}
+
+.contact-list dt {
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding-top: .1rem;
+}
+
+.contact-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.contact-list a { color: #14406f; }
+
+.placeholder {
+  padding: .05rem .3rem;
+  border-radius: 2px;
+  background: rgba(198, 47, 47, .12);
+  box-shadow: inset 0 0 0 1px rgba(198, 47, 47, .35);
+  font-style: italic;
+}

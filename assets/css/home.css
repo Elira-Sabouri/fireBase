@@ -1,0 +1,62 @@
+/* Rules used only by index.html: the intro card and the launcher grid. */
+
+.intro {
+  max-width: 44rem;
+  margin: 0 0 clamp(26px, 4vw, 44px);
+  --tilt: -.6deg;
+}
+
+.launcher {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: clamp(24px, 3vw, 38px);
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.launcher-card {
+  min-height: 9.5rem;
+  padding: 1.7rem 1.15rem 1.1rem;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .12), 0 11px 18px -7px rgba(45, 25, 8, .5);
+}
+
+.launcher-title {
+  margin: 0 0 .5rem;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+
+.launcher-link {
+  color: var(--ink);
+  text-decoration: none;
+}
+.launcher-link:hover { text-decoration: underline; }
+
+/* The whole card is the target, but only the link is in the tab order. */
+.launcher-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+/* Where :has() is supported the ring follows the whole card; without it the
+   link keeps its own outline, so focus stays visible either way. */
+@supports selector(:has(*)) {
+  .launcher-link:focus-visible { outline: none; }
+
+  .launcher-card:has(.launcher-link:focus-visible) {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+}
+
+.launcher-blurb {
+  margin: 0;
+  font-family: "Kalam", "Comic Sans MS", cursive;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  color: var(--ink);
+}

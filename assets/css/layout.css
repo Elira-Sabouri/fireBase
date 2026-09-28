@@ -1,0 +1,140 @@
+/* ---------------------------------------------------------------------------
+   The page shell: a wooden rail on the left holding the site navigation, and
+   the cork board filling the rest. Below 820px the rail becomes a top bar with
+   a Menu button.
+   --------------------------------------------------------------------------- */
+
+/* Narrow: rail on top, board taking the rest of the height. */
+.app {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--frame);
+  min-height: calc(100vh - 2 * var(--frame));
+}
+
+/* The rail */
+.sidebar {
+  padding: clamp(.75rem, 2vw, 1.05rem);
+  border-radius: 4px;
+  background-color: var(--walnut-light);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02 0.85' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.08 0 0 0 0 0.03 0.9 0 0 0 -0.34'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23w)'/%3E%3C/svg%3E");
+  color: var(--index-card);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .3), inset 0 0 40px rgba(20, 8, 0, .45);
+}
+
+.sidebar :focus-visible { outline-color: var(--focus-dark); }
+
+.sidebar-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  color: var(--index-card);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -.01em;
+  text-decoration: none;
+}
+.brand:hover .brand-name { text-decoration: underline; }
+
+.brand-pin {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, .85) 0 2px, transparent 3px), var(--pin-red);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, .45);
+}
+
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .45rem .7rem;
+  border: 1px solid rgba(255, 253, 247, .45);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, .22);
+  color: var(--index-card);
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.nav-toggle:hover { background: rgba(0, 0, 0, .35); }
+
+.nav-toggle-icon {
+  width: 16px;
+  height: 2px;
+  background: currentColor;
+  box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor;
+}
+
+/* Collapsed by default; the Menu button opens it on narrow screens */
+.site-nav { display: none; margin-top: .9rem; }
+.sidebar.is-open .site-nav { display: block; }
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-link {
+  display: block;
+  padding: .5rem .7rem;
+  border-left: 3px solid transparent;
+  border-radius: 2px;
+  color: var(--index-card);
+  font-weight: 600;
+  text-decoration: none;
+}
+.nav-link:hover {
+  background: rgba(255, 253, 247, .14);
+  text-decoration: underline;
+}
+
+.nav-link.is-current {
+  background: var(--index-card);
+  border-left-color: var(--pin-red);
+  color: var(--ink);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 7px 11px -7px rgba(0, 0, 0, .7);
+}
+.nav-link.is-current:hover {
+  background: var(--index-card);
+  text-decoration: underline;
+}
+
+.noscript-note {
+  margin: .9rem 0 0;
+  font-size: .85rem;
+  color: var(--index-card);
+}
+
+@media (min-width: 820px) {
+  .app {
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    position: sticky;
+    top: var(--frame);
+    align-self: start;
+  }
+
+  .sidebar-head { flex-direction: column; align-items: flex-start; gap: 0; }
+  .nav-toggle { display: none; }
+  .site-nav { display: block; }
+}

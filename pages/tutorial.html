@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Noticeboard — Tutorial</title>
+  <meta name="description" content="How to write, colour and take down a note on the board.">
+  <link rel="icon" href="../assets/img/pushpin.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Kalam:wght@400;700&display=swap">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/tutorial.css">
+</head>
+<body data-page="tutorial" data-base="..">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app">
+    <header class="sidebar" data-site-sidebar>
+      <noscript><p class="noscript-note">The site menu needs JavaScript. The pages are at ../index.html, noticeboard.html, tutorial.html and contact.html.</p></noscript>
+    </header>
+
+    <main class="board" id="main" tabindex="-1">
+      <header class="masthead">
+        <div class="title-strip">
+          <h1>Tutorial</h1>
+          <p class="tagline">Everything the board does, in one page.</p>
+        </div>
+      </header>
+
+      <div class="tutorial">
+        <section class="card pinned tutorial-card tutorial-steps" aria-labelledby="steps-heading">
+          <h2 id="steps-heading">Pinning a note</h2>
+          <ol class="steps">
+            <li>
+              <h3 class="step-title">Open the board</h3>
+              <p>Go to <a href="noticeboard.html">Noticeboard</a>. Notes load on their own and appear newest first.</p>
+            </li>
+            <li>
+              <h3 class="step-title">Write your message</h3>
+              <p>Type into the box on the index card. You get 500 characters; the counter under the box shows how many you have used. Line breaks are kept exactly as you type them.</p>
+            </li>
+            <li>
+              <h3 class="step-title">Add your name, or don't</h3>
+              <p>The name field is optional and holds 40 characters. Leave it empty and your note is signed <em>Anonymous</em>.</p>
+            </li>
+            <li>
+              <h3 class="step-title">Pick the paper</h3>
+              <p>Four colours: yellow, blue, pink and green. Use the arrow keys to move between them when you are on the keyboard.</p>
+            </li>
+            <li>
+              <h3 class="step-title">Press “Pin note”</h3>
+              <p>Your note drops onto the board straight away, and onto everyone else's board too — nobody has to reload.</p>
+            </li>
+          </ol>
+        </section>
+
+        <section class="card pinned tutorial-card" aria-labelledby="rules-heading">
+          <h2 id="rules-heading">Good to know</h2>
+          <ul class="facts">
+            <li><strong>One note every 30 seconds.</strong> The wait is remembered by your browser, so clearing your site data resets it.</li>
+            <li><strong>The board shows the 60 most recent notes.</strong> Older ones stay in the database but drop off the page.</li>
+            <li><strong>Times are relative</strong> — “3 minutes ago”, “last week”. Hover a timestamp to see the exact date.</li>
+            <li><strong>Notes are public.</strong> Anyone who opens the page can read what you pinned, so don't put anything private on it.</li>
+          </ul>
+        </section>
+
+        <section class="card pinned tutorial-card" aria-labelledby="replies-heading">
+          <h2 id="replies-heading">Replies</h2>
+          <p>Notes can be answered, but only by the person who runs the board. A reply shows up as a small slip tucked under the note it belongs to, signed <strong>Board owner</strong>.</p>
+          <p>Everyone can read replies; visitors cannot write them. If you want a note answered, that is the owner's call — the <a href="contact.html">Contact</a> page is the way to ask.</p>
+          <p>When a note is taken down by the owner, its replies go with it.</p>
+        </section>
+
+        <section class="card pinned tutorial-card" aria-labelledby="remove-heading">
+          <h2 id="remove-heading">Taking a note down</h2>
+          <p>A <strong>Remove</strong> button appears in the corner of every note you pinned yourself. The board recognises you by a silent, anonymous sign-in that happens when the page loads.</p>
+          <p>That sign-in lives in this browser only. Pin a note on your phone and you won't be able to remove it from your laptop — and clearing your browser data has the same effect.</p>
+          <p>If you need something taken down and the button isn't there, use the <a href="contact.html">Contact</a> page. The owner can remove any note.</p>
+        </section>
+
+        <section class="card pinned tutorial-card" aria-labelledby="trouble-heading">
+          <h2 id="trouble-heading">If something looks wrong</h2>
+          <p>The board never fails quietly. When it cannot reach the database it replaces the notes with a message saying why — no connection, daily free limit reached, or the board not being set up yet.</p>
+          <p>Reloading fixes most of it. If the same message keeps coming back, it is worth reporting.</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="../assets/js/nav.js"></script>
+</body>
+</html>

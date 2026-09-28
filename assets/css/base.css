@@ -1,0 +1,263 @@
+/* ---------------------------------------------------------------------------
+   Shared foundations: colour and type tokens, the cork board surface, the
+   taped title strip, paper stock, form controls and buttons.
+   Anything used by more than one page belongs here.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --walnut: #4e3322;
+  --walnut-light: #5a3b27;
+  --cork: #b8875a;
+  --ink: #2a2118;
+  --ink-soft: #5b4a3a;
+  --index-card: #fffdf7;
+  --pin-red: #c62f2f;
+  --focus: #1f5fa8;
+  --focus-dark: #ffd66b;
+  --paper-yellow: #f7e48f;
+  --paper-blue: #c9dfef;
+  --paper-pink: #f3c9d1;
+  --paper-green: #cfe5bd;
+  --frame: clamp(8px, 1.8vw, 18px);
+  --rail: clamp(190px, 19vw, 235px);
+  --card-shadow: 0 1px 1px rgba(0, 0, 0, .15), 0 12px 22px -8px rgba(40, 20, 5, .55);
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: var(--frame);
+  background: var(--walnut);
+  color: var(--ink);
+  font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+  overflow-x: hidden;
+}
+
+/* The cork board every page sits on */
+.board {
+  padding: clamp(22px, 4vw, 48px);
+  border-radius: 4px;
+  background-color: var(--cork);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.28 0 0 0 0 0.16 0 0 0 0 0.06 1.7 0 0 0 -0.66'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23d)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.94 0 0 0 0 0.8 0 0 0 0 0.6 0 1.6 0 0 -0.7'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23l)'/%3E%3C/svg%3E");
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25), inset 0 0 70px rgba(40, 20, 5, .45);
+}
+
+.board:focus { outline: 3px solid var(--focus-dark); outline-offset: -3px; }
+
+/* Title strip, taped to the board */
+.masthead { margin: 0 0 clamp(30px, 5vw, 54px); }
+
+.title-strip {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  padding: .55rem 1.2rem .65rem;
+  background: var(--index-card);
+  transform: rotate(-1.4deg);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .15), 0 12px 20px -8px rgba(40, 20, 5, .55);
+}
+
+.title-strip::before,
+.title-strip::after {
+  content: "";
+  position: absolute;
+  top: -9px;
+  width: 62px;
+  height: 22px;
+  background: rgba(255, 255, 255, .55);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
+}
+.title-strip::before { left: -16px; transform: rotate(-32deg); }
+.title-strip::after { right: -16px; transform: rotate(28deg); }
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.3rem, 7vw, 4.2rem);
+  font-weight: 800;
+  font-variation-settings: "opsz" 96;
+  line-height: .95;
+  letter-spacing: -.03em;
+  overflow-wrap: anywhere;
+}
+
+.tagline {
+  margin: .4rem 0 0;
+  font-size: 1rem;
+  color: var(--ink-soft);
+}
+
+/* Paper stock */
+.paper-yellow { background-color: var(--paper-yellow); }
+.paper-blue { background-color: var(--paper-blue); }
+.paper-pink { background-color: var(--paper-pink); }
+.paper-green { background-color: var(--paper-green); }
+
+/* Anything held to the board by a pushpin */
+.pinned {
+  --pin: var(--pin-red);
+  position: relative;
+  transform: rotate(var(--tilt, 0deg));
+}
+
+.pinned::before {
+  content: "";
+  position: absolute;
+  top: .5rem;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, .8) 0 2px, transparent 3px), var(--pin);
+  box-shadow: 0 3px 3px rgba(0, 0, 0, .35);
+}
+
+/* An index card of prose */
+.card {
+  padding: 1.7rem clamp(1.1rem, 2.4vw, 1.7rem) clamp(1.1rem, 2.4vw, 1.6rem);
+  background: var(--index-card);
+  box-shadow: var(--card-shadow);
+}
+
+.card h2 {
+  margin: 0 0 .85rem;
+  padding-bottom: .45rem;
+  border-bottom: 2px solid #e27b86;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.card h3 {
+  margin: 1.4rem 0 .4rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.card p,
+.card li { line-height: 1.55; }
+
+.card p { margin: 0 0 .8rem; }
+.card > :last-child { margin-bottom: 0; }
+
+.handwritten {
+  font-family: "Kalam", "Comic Sans MS", cursive;
+  font-size: 1.15rem;
+  line-height: 1.45;
+}
+
+/* Form controls */
+.field { margin-bottom: .85rem; }
+
+.field-label,
+legend {
+  display: block;
+  margin-bottom: .3rem;
+  padding: 0;
+  font-size: .85rem;
+  font-weight: 600;
+}
+
+.optional { font-weight: 400; color: var(--ink-soft); }
+
+fieldset { margin: 0 0 1.1rem; padding: 0; border: 0; }
+
+textarea,
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: .5rem .6rem;
+  border: 1px solid #cbbba7;
+  border-radius: 3px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+textarea {
+  min-height: 7.5rem;
+  resize: vertical;
+  font-family: "Kalam", "Comic Sans MS", cursive;
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+/* Buttons */
+.pin-button {
+  width: 100%;
+  padding: .7rem 1rem;
+  border: 0;
+  border-radius: 3px;
+  background: var(--pin-red);
+  color: #fff;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.pin-button:hover { background: #a92525; }
+.pin-button:disabled { background: #7c6f62; cursor: not-allowed; }
+
+.small-button {
+  padding: .35rem .7rem;
+  border: 1px solid #cbbba7;
+  border-radius: 3px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: .85rem;
+  cursor: pointer;
+}
+.small-button:hover { background: #f1e9dc; }
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--focus);
+  font: inherit;
+  font-size: .85rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.link-button:hover { color: #14406f; }
+
+/* Focus, visible everywhere */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  top: .6rem;
+  left: .6rem;
+  z-index: 20;
+  padding: .55rem .9rem;
+  border-radius: 3px;
+  background: var(--index-card);
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--card-shadow);
+  transform: translateY(calc(-100% - 1rem));
+}
+.skip-link:focus { transform: none; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

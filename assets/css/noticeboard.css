@@ -1,0 +1,257 @@
+/* ---------------------------------------------------------------------------
+   Rules used only by pages/noticeboard.html: the compose card, the pinned
+   notes, and the owner bar.
+   --------------------------------------------------------------------------- */
+
+.pinboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: clamp(24px, 3vw, 38px);
+  align-items: start;
+}
+
+/* The index card used for writing */
+.compose {
+  padding: 1.1rem 1.1rem 1.2rem;
+  background: var(--index-card);
+  transform: rotate(-.6deg);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .15), 0 12px 22px -8px rgba(40, 20, 5, .55);
+}
+
+@media (min-width: 600px) {
+  .compose { grid-row: span 3; }
+}
+
+.compose h2 {
+  margin: 0 0 .85rem;
+  padding-bottom: .45rem;
+  border-bottom: 2px solid #e27b86;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.char-count {
+  display: block;
+  margin-top: .2rem;
+  text-align: right;
+  font-size: .78rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+}
+
+.swatches { display: flex; gap: .65rem; }
+
+.swatch { position: relative; }
+
+.swatch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.dot {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(0, 0, 0, .25);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.swatch input:checked + .dot { box-shadow: 0 0 0 2px var(--index-card), 0 0 0 4px var(--ink); }
+.swatch input:focus-visible + .dot { outline: 3px solid var(--focus); outline-offset: 5px; }
+
+.status {
+  min-height: 1.25em;
+  margin: .6rem 0 0;
+  font-size: .85rem;
+  color: var(--ink-soft);
+}
+.status.is-error { color: #a42020; }
+
+/* Paper notes */
+.note {
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+  min-height: 9.5rem;
+  margin: 0;
+  padding: 1.7rem 1.15rem .9rem;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .12), 0 11px 18px -7px rgba(45, 25, 8, .5);
+}
+
+.note-text {
+  margin: 0;
+  font-family: "Kalam", "Comic Sans MS", cursive;
+  font-size: 1.2rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* margin-top:auto keeps the footer at the foot of the note, the way
+   justify-content did before replies were added below it. */
+.note footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: .2rem .8rem;
+  margin-top: auto;
+  font-size: .8rem;
+  color: var(--ink-soft);
+}
+
+.note-author { font-weight: 600; overflow-wrap: anywhere; }
+
+.remove-button {
+  padding: .1rem .45rem;
+  border: 1px solid rgba(0, 0, 0, .25);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, .55);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: .75rem;
+  cursor: pointer;
+}
+.remove-button:hover { background: #fff; color: #a42020; }
+
+.board-message {
+  min-height: 0;
+  font-family: "Kalam", "Comic Sans MS", cursive;
+  font-size: 1.15rem;
+  line-height: 1.4;
+}
+
+.owner-bar {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+  margin-top: clamp(28px, 4vw, 46px);
+  padding: .5rem .8rem;
+  background: var(--index-card);
+  font-size: .85rem;
+}
+
+.owner-bar input {
+  width: 10.5rem;
+  max-width: 100%;
+  padding: .35rem .45rem;
+  border: 1px solid #cbbba7;
+  border-radius: 3px;
+  font: inherit;
+  font-size: .85rem;
+}
+
+.owner-fields { display: inline-flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+
+/* Owner replies: slips tucked under the note, read-only for everyone else */
+.replies-notice {
+  max-width: 44rem;
+  margin: 0 0 clamp(18px, 2.5vw, 26px);
+  padding: .55rem .8rem;
+  border-left: 4px solid var(--pin-red);
+  background: var(--index-card);
+  font-size: .9rem;
+  color: var(--ink);
+}
+
+.note-replies {
+  margin-top: -.2rem;
+  padding-top: .7rem;
+  border-top: 1px dashed rgba(0, 0, 0, .22);
+}
+
+.reply-list {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  margin: 0 0 .6rem;
+  padding: 0;
+  list-style: none;
+}
+
+.reply {
+  padding: .5rem .6rem;
+  border-left: 3px solid var(--pin-red);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, .62);
+}
+
+.reply-text {
+  margin: 0 0 .25rem;
+  font-family: "Kalam", "Comic Sans MS", cursive;
+  font-size: 1rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.reply-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .2rem .6rem;
+  margin: 0;
+  font-size: .75rem;
+  color: var(--ink-soft);
+}
+
+.reply-author { font-weight: 700; }
+
+.reply-toggle {
+  padding: .2rem .55rem;
+  border: 1px solid rgba(0, 0, 0, .3);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, .62);
+  color: var(--ink);
+  font: inherit;
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.reply-toggle:hover { background: #fff; }
+
+.reply-form { margin-top: .2rem; }
+
+.reply-input {
+  width: 100%;
+  min-height: 3.4rem;
+  padding: .4rem .5rem;
+  border: 1px solid #b6a58f;
+  border-radius: 3px;
+  background: #fff;
+  color: var(--ink);
+  font-family: "Kalam", "Comic Sans MS", cursive;
+  font-size: 1rem;
+  line-height: 1.35;
+  resize: vertical;
+}
+
+.reply-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+  margin-top: .4rem;
+}
+
+.reply-status {
+  min-height: 1.1em;
+  margin: .35rem 0 0;
+  font-size: .78rem;
+  color: var(--ink-soft);
+}
+.reply-status.is-error { color: #a42020; }
+
+.just-pinned { animation: pin-drop .38s cubic-bezier(.2, .8, .3, 1.2); }
+
+@keyframes pin-drop {
+  from { opacity: 0; transform: translateY(-16px) rotate(calc(var(--tilt, 0deg) - 4deg)) scale(1.04); }
+  to { opacity: 1; transform: rotate(var(--tilt, 0deg)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .just-pinned { animation: none; }
+}
