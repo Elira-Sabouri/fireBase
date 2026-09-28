@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Noticeboard — Home</title>
+  <meta name="description" content="A cork noticeboard anyone can pin a note to.">
+  <link rel="icon" href="assets/img/pushpin.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Kalam:wght@400;700&display=swap">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/home.css">
+</head>
+<body data-page="home" data-base=".">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app">
+    <header class="sidebar" data-site-sidebar>
+      <noscript><p class="noscript-note">The site menu needs JavaScript. The pages are at index.html, pages/noticeboard.html, pages/tutorial.html and pages/contact.html.</p></noscript>
+    </header>
+
+    <main class="board" id="main" tabindex="-1">
+      <header class="masthead">
+        <div class="title-strip">
+          <h1>Noticeboard</h1>
+          <p class="tagline">Pin a note for everyone who visits.</p>
+        </div>
+      </header>
+
+      <section class="card pinned intro" aria-labelledby="intro-heading">
+        <h2 id="intro-heading">What this is</h2>
+        <p>A single cork board that anyone can pin a paper note to. Write something, pick a colour, and it appears for the next person who visits — no account, no sign-up.</p>
+        <p>Notes are public. You can take down anything you pinned yourself; the person who runs the board can take down anything at all.</p>
+      </section>
+
+      <h2 class="visually-hidden">Where to go</h2>
+      <ul class="launcher" id="launcher"></ul>
+    </main>
+  </div>
+
+  <script type="module" src="assets/js/nav.js"></script>
+  <script type="module" src="assets/js/home.js"></script>
+</body>
+</html>
