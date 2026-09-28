@@ -2,7 +2,7 @@
 // be rewritten when you update the app, so keep your keys out of this file.
 
 // Shown in the sidebar and used as the base of every page title.
-export const SITE_TITLE = "Integrative Transcriptomics";
+export const SITE_TITLE = "Expression Bioinfo";
 
 // Heading printed on the taped title strip of the sticky-notes page.
 export const BOARD_TITLE = "Sticky Notes";
