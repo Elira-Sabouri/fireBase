@@ -34,7 +34,7 @@ body {
   margin: 0;
   min-height: 100vh;
   padding: var(--frame);
-  background: var(--walnut);
+  background: var(--navy);
   color: var(--ink);
   font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
   overflow-x: hidden;
